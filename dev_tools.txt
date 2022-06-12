@@ -1,0 +1,98 @@
+GET /search_fun_test/_doc/doc_b
+
+GET /search_fun_test/_search?q=dog
+
+GET _search?q=jumped
+
+GET _search
+{
+  "size": 0,
+  "aggs": {
+    "CATEGORY": {
+      "terms": {
+        "field": "category.keyword"
+      }
+    }
+  }
+}
+
+# Delete a document<br>
+DELETE search_fun_test/_doc/doc_b_n
+
+# Delete an Index<br>
+DELETE search_fun_testn
+
+POST _analyze
+{
+  //"analyzer": "simple",
+  "analyzer": "snowball",
+  "text": "The QUICK Brown-Foxes jumped over the lazy dog's bone."
+}
+
+GET /search_fun_revisited
+
+GET search_fun_test/_search
+{
+"size": 10,
+"from": 1,
+"query": {
+    "match_all": {}
+  }
+}
+
+GET search_fun_test/_search?scroll=10m
+{
+"size": 1,
+"query": {
+    "match_all": {}
+  }
+}
+
+GET _search/scroll
+{
+"scroll": "10m",
+"scroll_id" : "FGluY2x1ZGVfY29udGV4dF91dWlkDXF1ZXJ5QW5kRmV0Y2gBFmZua3VlcHFDVGcyTmVMZ2RsRDIzQlEAAAAAAAAAKhZFaHVsZEpkdVFYbTNsczR2bEprWnhn"
+}
+
+GET search_fun_test/_search
+{
+"size": 10,
+"query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "title.keyword": {
+        "order": "asc"
+      }
+    }
+  ]
+}
+
+PUT /search_fun_test/_doc/doc_a
+{ 
+   "title": "Fox and Hounds", 
+   "body": "The quick red fox jumped over the lazy brown dogs.", 
+   "category": "childrens" 
+}
+
+PUT /search_fun_test/_doc/doc_b
+{ 
+   "title": "Fox wins championship", 
+   "body": "Wearing all red, the Fox jumped out to a lead in the race over the Dog.", 
+   "category": "sports" 
+}
+
+PUT /search_fun_test/_doc/doc_c
+{ 
+   "title": "Lead Paint Removal", 
+   "body": "All lead must be removed from the brown and red paint.", 
+   "category": "instructional" 
+}
+
+PUT /search_fun_test/_doc/doc_d
+{    
+   "title": "The Three Little Pigs Revisted", 
+   "body": "The big, bad wolf huffed and puffed and blew the house down. The end.", 
+   "category": "childrens" 
+}

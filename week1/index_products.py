@@ -60,7 +60,18 @@ def get_opensearch():
     auth = ('admin', 'admin')
 
     #### Step 2.a: Create a connection to OpenSearch
-    client = None
+    host = 'localhost'
+    client = OpenSearch(
+        hosts=[{'host': host, 'port': port}],
+        http_compress=True,  # enables gzip compression for request bodies
+        http_auth=auth,
+        # client_cert = client_cert_path,
+        # client_key = client_key_path,
+        use_ssl=True,
+        verify_certs=False,
+        ssl_assert_hostname=False,
+        ssl_show_warn=False,
+    )
     return client
 
 
@@ -69,6 +80,11 @@ def get_opensearch():
 @click.option('--index_name', '-i', default="bbuy_products", help="The name of the index to write to")
 def main(source_dir: str, index_name: str):
     client = get_opensearch()
+
+    """logger.info('\nDeleting index:')
+    response = client.indices.delete(index=index_name)"""    
+    logger.info("I am here, indexing products")
+
     # To test on a smaller set of documents, change this glob to be more restrictive than *.xml
     files = glob.glob(source_dir + "/*.xml")
     docs_indexed = 0
@@ -90,8 +106,17 @@ def main(source_dir: str, index_name: str):
                 continue
 
             #### Step 2.b: Create a valid OpenSearch Doc and bulk index 2000 docs at a time
-            the_doc = None
+            the_doc = doc
+            the_doc['_index'] = index_name
             docs.append(the_doc)
+            #print(the_doc)
+            #logger.info(the_doc)
+            if len(docs) == 2000:
+                bulk(client, docs)
+                docs = []
+            #break    
+        bulk(client, docs)
+        #break
     toc = time.perf_counter()
     logger.info(f'Done. Total docs: {docs_indexed}.  Total time: {((toc - tic) / 60):0.3f} mins.')
 
