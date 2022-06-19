@@ -54,8 +54,17 @@
           }
         }
       },
-      "TODO: REPLACE WITH SUGGEST": {
-        "REPLACE": "REPLACE"
+      "suggest": {
+        "type": "completion",
+        "fields": {
+          "trigrams": {
+            "type": "trigrams"
+          }
+          ,"text":{          
+            "type": "text",          
+            "analyzer": "english"
+          }
+        }
       },
       "canonical": {
         "type": "text"

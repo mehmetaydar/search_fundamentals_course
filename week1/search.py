@@ -185,6 +185,8 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
             "regularPrice"
         ],        
         "highlight": {
+            "pre_tags": ['<span style="color:red">'],
+            "post_tags": ["</span>"],
             "fields": {
             "name": { "type" : "plain" },
             "shortDescription": { "type" : "plain" },
